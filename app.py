@@ -1,55 +1,47 @@
-from flask import Flask, jsonify, render_template
-import json
+from flask import Flask, jsonify, render_template, request
+import mysql.connector
 import os
 import sys
+
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 from api.herramientas_manuales import herramientas_manual_bp
 
 app = Flask(__name__)
-
-DATA_PATH = "data"
 app.register_blueprint(herramientas_manual_bp)
 
-def cargar_articulos():
-    with open("data/articulos.json", "r", encoding="utf-8") as archivo:
-        return json.load(archivo)
+# Conexión a la base de datos MySQL (Asegúrate de que `ferreterribd` existe)
+try:
+    db = mysql.connector.connect(
+        host="localhost",
+        port=3306,
+        user="root",
+        password="",
+        database="ferreteriadb"
+    )
+    print("✅ Conexión a MySQL exitosa")
+except mysql.connector.Error as err:
+    print(f"❌ Error de conexión a MySQL: {err}")
 
-@app.route("/api/articulos", methods=["GET"])
-def obtener_articulos():
-    articulos = cargar_articulos()
-    return jsonify(articulos)
-
-def cargar_todos_los_datos():
-    inventario = {}
-    for archivo in os.listdir(DATA_PATH):
-        if archivo.endswith(".json"):
-            nombre_categoria = archivo.replace(".json", "")
-            ruta = os.path.join(DATA_PATH, archivo)
-            with open(ruta, "r", encoding="utf-8") as f:
-                inventario[nombre_categoria] = json.load(f)
-    return inventario
-
-@app.route("/api/categoria/<nombre_categoria>")
-def api_categoria(nombre_categoria):
-    ruta_archivo = os.path.join(DATA_PATH, f"{nombre_categoria}.json")
-    ruta_carpeta = os.path.join(DATA_PATH, nombre_categoria)
-
-    if os.path.isfile(ruta_archivo):
-        with open(ruta_archivo, "r", encoding="utf-8") as archivo:
-            datos = json.load(archivo)
+# Endpoint para obtener productos desde la base de datos
+@app.route("/api/<nombre_tabla>", methods=["GET"])
+def obtener_datos_tabla(nombre_tabla):
+    cursor = db.cursor()
+    
+    try:
+        # Obtener todas las tablas de la base de datos
+        cursor.execute("SHOW TABLES")
+        tablas_validas = [tabla[0] for tabla in cursor.fetchall()]
+        
+        if nombre_tabla not in tablas_validas:
+            return jsonify({"error": f"La tabla '{nombre_tabla}' no existe"}), 404
+        
+        # Ejecutar consulta sobre la tabla elegida
+        cursor.execute(f"SELECT * FROM {nombre_tabla}")
+        datos = cursor.fetchall()
         return jsonify(datos)
-
-    elif os.path.isdir(ruta_carpeta):
-        todos_los_datos = []
-        for archivo_nombre in os.listdir(ruta_carpeta):
-            if archivo_nombre.endswith(".json"):
-                ruta_json = os.path.join(ruta_carpeta, archivo_nombre)
-                with open(ruta_json, "r", encoding="utf-8") as archivo:
-                    datos = json.load(archivo)
-                    todos_los_datos.extend(datos)
-        return jsonify(todos_los_datos)
-
-    return jsonify({"error": "Categoría no encontrada"}), 404
+    
+    except mysql.connector.Error as err:
+        return jsonify({"error": f"Error al consultar la tabla {nombre_tabla}: {err}"}), 500
 
 
 # Página principal e index
@@ -57,18 +49,6 @@ def api_categoria(nombre_categoria):
 @app.route("/index")
 def vista_index():
     return render_template("index.html")
-
-# Vista inventario (ahora se accede con /inventario)
-@app.route("/inventario")
-def vista_inventario():
-    datos = cargar_todos_los_datos()
-    return render_template("inventario.html", inventario=datos)
-
-# API de inventario completo
-@app.route("/api")
-def api_inventario():
-    datos = cargar_todos_los_datos()
-    return jsonify(datos)
 
 # Otras páginas
 @app.route('/confirmacion')
@@ -92,4 +72,4 @@ def vista_login():
     return render_template('login.html')
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(debug=True, port=3000)
