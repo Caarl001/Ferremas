@@ -1,1 +1,3 @@
-# Datos para agregar mas adelante.
+Readme
+## Como iniciar el proyecto 
+>python app.py

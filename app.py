@@ -83,5 +83,9 @@ def vista_nosotros():
 def vista_pago():
     return render_template('pago.html')
 
+@app.route('/sucursal')
+def vista_sucursales():
+    return render_template('sucursal.html')
+
 if __name__ == "__main__":
     app.run(debug=True)

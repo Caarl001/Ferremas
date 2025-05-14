@@ -14,17 +14,17 @@
 
 <body>
   <header class="posicion">
-    <a class="logo" href="index.html">
+    <a class="logo" href="{{ url_for('vista_index')}}">
       <h1 class="Titulo"><span>The </span>FERREMAS</h1>
     </a>
     <a class="login" href="">Iniciar Sección </a>
   </header>
   <div class="nav-bg">
     <nav class="Navegacion-principal contenedor">
-      <a class="navegacion__enlace" href="index.html">Inicio</a>
-      <a class="navegacion__enlace" href="inventario.html">Productos</a>
-      <a class="navegacion__enlace" href="nosotros.html">Sobre Nosotros</a>
-      <a class="navegacion__enlace--activo" href="sucursal.html">Sucursales</a>
+      <a class="navegacion__enlace" href="{{ url_for('vista_index') }}">Inicio</a>
+      <a class="navegacion__enlace" href="{{ url_for('vista_inventario')}}">Productos</a>
+      <a class="navegacion__enlace" href="{{ url_for('vista_nosotros')}}">Sobre Nosotros</a>
+      <a class="navegacion__enlace--activo" href="{{ url_for('vista_sucursales')}}">Sucursales</a>
     </nav>
   </div>
 
