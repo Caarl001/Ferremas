@@ -71,5 +71,9 @@ def vista_sucursales():
 def vista_login():
     return render_template('login.html')
 
+@app.route("/inventario")
+def vista_inventario():
+    return render_template("inventario.html")
+
 if __name__ == "__main__":
     app.run(debug=True, port=3000)
