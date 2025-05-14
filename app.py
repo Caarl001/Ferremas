@@ -1,4 +1,5 @@
 from flask import Flask, jsonify, render_template, request
+
 import mysql.connector
 import json
 import os
@@ -14,6 +15,9 @@ from api.herramientas_manuales import herramientas_manual_bp
 obtener_conexion()
 
 app = Flask(__name__)
+
+
+
 
 # Define la ruta de la carpeta donde se encuentran archivos JSON (modifícala según tu estructura)
 ruta_carpeta = "json_data"  # Ejemplo: la carpeta "json_data" en el directorio raíz del proyecto
