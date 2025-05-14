@@ -87,5 +87,9 @@ def vista_pago():
 def vista_sucursales():
     return render_template('sucursal.html')
 
+@app.route('/login')
+def vista_login():
+    return render_template('login.html')
+
 if __name__ == "__main__":
     app.run(debug=True)
