@@ -1,3 +1,177 @@
 Readme
 ## Como iniciar el proyecto 
 >python app.py
+## Script 
+-- ==========================================================
+-- Eliminamos la base de datos si existe y la creamos de nuevo
+-- ==========================================================
+DROP DATABASE IF EXISTS FerreteriaDB;
+CREATE DATABASE FerreteriaDB;
+USE FerreteriaDB;
+
+-- ==========================================================
+-- CREACIÓN DE TABLAS
+-- ==========================================================
+
+-- Tabla: Sucursales
+CREATE TABLE Sucursales (
+    idSucursal INT AUTO_INCREMENT PRIMARY KEY,
+    nombre VARCHAR(100) NOT NULL,
+    direccion VARCHAR(200),
+    telefono VARCHAR(15)
+);
+
+-- Tabla: Trabajadores
+CREATE TABLE Trabajadores (
+    idTrabajador INT AUTO_INCREMENT PRIMARY KEY,
+    nombre VARCHAR(100) NOT NULL,
+    apellido VARCHAR(100) NOT NULL,
+    cargo VARCHAR(50),
+    fecha_contratacion DATE,
+    sueldo DECIMAL(10,2),
+    idSucursal INT,
+    FOREIGN KEY (idSucursal) REFERENCES Sucursales(idSucursal)
+);
+
+-- Tabla: Proveedores
+CREATE TABLE Proveedores (
+    idProveedor INT AUTO_INCREMENT PRIMARY KEY,
+    nombre VARCHAR(100) NOT NULL,
+    direccion VARCHAR(200),
+    telefono VARCHAR(15),
+    email VARCHAR(100)
+);
+
+-- Tabla: CategoriasProductos
+CREATE TABLE CategoriasProductos (
+    idCategoria INT AUTO_INCREMENT PRIMARY KEY,
+    descripcion VARCHAR(100) NOT NULL
+);
+
+-- Tabla: Productos
+CREATE TABLE Productos (
+    idProducto INT AUTO_INCREMENT PRIMARY KEY,
+    nombre VARCHAR(100) NOT NULL,
+    descripcion TEXT,
+    precio DECIMAL(10,2) NOT NULL,
+    idProveedor INT,
+    idCategoria INT,
+    FOREIGN KEY (idProveedor) REFERENCES Proveedores(idProveedor),
+    FOREIGN KEY (idCategoria) REFERENCES CategoriasProductos(idCategoria)
+);
+
+-- Tabla: Inventario
+CREATE TABLE Inventario (
+    idInventario INT AUTO_INCREMENT PRIMARY KEY,
+    idSucursal INT,
+    idProducto INT,
+    cantidad INT DEFAULT 0,
+    FOREIGN KEY (idSucursal) REFERENCES Sucursales(idSucursal),
+    FOREIGN KEY (idProducto) REFERENCES Productos(idProducto),
+    UNIQUE (idSucursal, idProducto)
+);
+
+-- Tabla: Clientes
+CREATE TABLE Clientes (
+    idCliente INT AUTO_INCREMENT PRIMARY KEY,
+    nombre VARCHAR(100) NOT NULL,
+    apellido VARCHAR(100),
+    telefono VARCHAR(15),
+    email VARCHAR(100)
+);
+
+-- Tabla: Ventas
+CREATE TABLE Ventas (
+    idVenta INT AUTO_INCREMENT PRIMARY KEY,
+    fecha DATE NOT NULL,
+    idSucursal INT,
+    idTrabajador INT,
+    idCliente INT,
+    total DECIMAL(10,2),
+    FOREIGN KEY (idSucursal) REFERENCES Sucursales(idSucursal),
+    FOREIGN KEY (idTrabajador) REFERENCES Trabajadores(idTrabajador),
+    FOREIGN KEY (idCliente) REFERENCES Clientes(idCliente)
+);
+
+-- Tabla: DetalleVentas
+CREATE TABLE DetalleVentas (
+    idDetalle INT AUTO_INCREMENT PRIMARY KEY,
+    idVenta INT,
+    idProducto INT,
+    cantidad INT NOT NULL,
+    precio_unitario DECIMAL(10,2) NOT NULL,
+    FOREIGN KEY (idVenta) REFERENCES Ventas(idVenta),
+    FOREIGN KEY (idProducto) REFERENCES Productos(idProducto)
+);
+
+-- ==========================================================
+-- INSERCIONES DE DATOS DE MUESTRA
+-- ==========================================================
+
+-- Sucursales
+INSERT INTO Sucursales (nombre, direccion, telefono) VALUES 
+  ('Sucursal Central', 'Av. Principal 123, Santiago', '123456789'),
+  ('Sucursal Norte', 'Calle Norte 456, Santiago', '987654321'),
+  ('Sucursal Sur', 'Av. Sur 789, Santiago', '456789123');
+
+-- Trabajadores
+INSERT INTO Trabajadores (nombre, apellido, cargo, fecha_contratacion, sueldo, idSucursal) VALUES 
+  ('Juan', 'Pérez', 'Gerente', '2020-01-15', 1500.00, 1),
+  ('María', 'Gómez', 'Vendedora', '2021-03-20', 800.00, 1),
+  ('Carlos', 'Díaz', 'Almacenero', '2019-07-10', 900.00, 2),
+  ('Ana', 'Martínez', 'Cajera', '2022-05-05', 700.00, 3),
+  ('Miguel', 'Rodríguez', 'Vendedor', '2023-01-12', 750.00, 2);
+
+-- Proveedores
+INSERT INTO Proveedores (nombre, direccion, telefono, email) VALUES 
+  ('Proveedor A', 'Calle Proveedor 10, Santiago', '111222333', 'contacto@proveedora.com'),
+  ('Proveedor B', 'Av. Proveedor 20, Santiago', '444555666', 'contacto@proveedorb.com');
+
+-- Categorías de Productos
+INSERT INTO CategoriasProductos (descripcion) VALUES 
+  ('Herramientas'),
+  ('Electricidad'),
+  ('Construcción'),
+  ('Pinturas');
+
+-- Productos
+INSERT INTO Productos (nombre, descripcion, precio, idProveedor, idCategoria) VALUES 
+  ('Taladro', 'Taladro eléctrico potente para trabajos diversos', 250.00, 1, 1),
+  ('Martillo', 'Martillo de acero para uso profesional', 80.00, 1, 1),
+  ('Sierra Circular', 'Sierra circular para cortar madera y metal', 320.00, 2, 1),
+  ('Cable Eléctrico', 'Cable de alta resistencia, 50 metros', 120.00, 2, 2),
+  ('Cemento', 'Bolsa de cemento para construcción', 45.00, 1, 3),
+  ('Pintura Blanca', 'Galón de pintura blanca de alta calidad', 60.00, 2, 4);
+
+-- Inventario
+-- Se asume que los productos y sucursales tienen los IDs asignados según el orden de inserción.
+INSERT INTO Inventario (idSucursal, idProducto, cantidad) VALUES 
+  (1, 1, 10), -- Sucursal Central - Taladro
+  (1, 2, 20), -- Sucursal Central - Martillo
+  (1, 4, 15), -- Sucursal Central - Cable Eléctrico
+  (2, 1, 5),  -- Sucursal Norte - Taladro
+  (2, 3, 8),  -- Sucursal Norte - Sierra Circular
+  (2, 5, 50), -- Sucursal Norte - Cemento
+  (3, 2, 10), -- Sucursal Sur - Martillo
+  (3, 4, 12), -- Sucursal Sur - Cable Eléctrico
+  (3, 6, 18); -- Sucursal Sur - Pintura Blanca
+
+-- Clientes
+INSERT INTO Clientes (nombre, apellido, telefono, email) VALUES 
+  ('Luis', 'Rodríguez', '222333444', 'luis@gmail.com'),
+  ('Ana', 'Sánchez', '555666777', 'ana@gmail.com'),
+  ('Jorge', 'Hernández', '888999000', 'jorge@gmail.com');
+
+-- Ventas
+-- Se crean dos ventas de ejemplo con fecha, sucursal, trabajador y cliente
+INSERT INTO Ventas (fecha, idSucursal, idTrabajador, idCliente, total) VALUES 
+  ('2025-05-10', 1, 2, 1, 330.00),
+  ('2025-05-11', 2, 3, 2, 465.00);
+
+-- Detalle de Ventas
+-- Se detalla cada venta con los productos vendidos, cantidad y precio unitario
+INSERT INTO DetalleVentas (idVenta, idProducto, cantidad, precio_unitario) VALUES 
+  (1, 1, 1, 250.00),   -- Venta 1: 1 Taladro
+  (1, 2, 1, 80.00),    -- Venta 1: 1 Martillo
+  (2, 3, 1, 320.00),   -- Venta 2: 1 Sierra Circular
+  (2, 5, 3, 45.00);    -- Venta 2: 3 Cementos
