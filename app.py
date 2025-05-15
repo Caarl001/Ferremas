@@ -67,7 +67,7 @@ def obtener_datos_tabla(nombre_tabla):
 @app.route("/")
 @app.route("/index")
 def vista_index():
-    return render_template("index.html")
+    return render_template("index.html", hero_img='img/hero.png')
 
 @app.route('/confirmacion')
 def vista_confirmacion():

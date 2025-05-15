@@ -28,29 +28,58 @@
     </nav>
   </div>
 
-  <section class="Hero">
-    <div class="contenido-hero">
-      <h2>La Mejor ferretería <span>FERREMAS</span>. Paga menos, Compra <span>MÁS</span></h2>
+ <section class="Hero" style="position:relative;width:100vw;left:50%;right:50%;transform:translateX(-50%);margin-left:calc(-50vw + 50%);margin-right:calc(-50vw + 50%);overflow:hidden;">
+    <img src="{{ url_for('static', filename='img/sucursalesHero.webp') }}" alt="Imagen hero" style="width:100vw;height:900px;object-fit:cover;display:block;filter:brightness(0.85);object-position:center;">
+    <div class="contenido-hero" style="position:absolute;top:0;left:0;width:100%;height:100%;display:flex;align-items:center;justify-content:center;">
+      <h2>Nuestras <span>SUCURSALES</span>. <br>son las que hacen posible <span>FERREMAS</span></h2>
     </div>
-  </section>
+</section>
 
       <main class="contenedor sombra">
     <section>
       <h1 class="Titulo"><span>Nuestras </span>Sucursales</h1>
-      <h3>Conoce las sucursales  que hacen posible Ferremas</h3>
       <ul class="lista" id="lista-sucursales">
         <!-- Aquí se llenarán las sucursales dinámicamente -->
       </ul>
       <div style="margin-top: 2em;">
-        <h4>Agregar nueva sucursal</h4>
-        <form id="form-agregar-sucursal">
-          <input type="text" id="nombre" placeholder="Nombre" required>
-          <input type="text" id="direccion" placeholder="Dirección" required>
-          <input type="text" id="telefono" placeholder="Teléfono" required>
-          <button type="submit">Agregar</button>
+        <h4 style="margin-bottom:1em;text-align:center;font-size:2rem;color:#1976D2;">Agregar nueva sucursal</h4>
+        <form id="form-agregar-sucursal" style="background:#f8f9fa;padding:2em 1.5em;border-radius:14px;box-shadow:0 2px 12px #0001;max-width:700px;margin:0 auto 2em auto;display:flex;flex-direction:row;gap:2em;align-items:flex-start;justify-content:center;flex-wrap:wrap;">
+          <div style="flex:1;min-width:220px;display:flex;flex-direction:column;gap:1em;">
+            <input type="text" id="nombre" name="nombre" placeholder="Nombre" required style="width:100%;padding:0.8em 1em;border-radius:8px;border:1px solid #bdbdbd;font-size:1.1em;">
+            <input type="text" id="direccion" name="direccion" placeholder="Dirección" required style="width:100%;padding:0.8em 1em;border-radius:8px;border:1px solid #bdbdbd;font-size:1.1em;">
+            <input type="text" id="telefono" name="telefono" placeholder="Teléfono" required style="width:100%;padding:0.8em 1em;border-radius:8px;border:1px solid #bdbdbd;font-size:1.1em;">
+          </div>
+          <div style="flex:1;min-width:220px;display:flex;flex-direction:column;gap:1em;align-items:center;">
+            <button type="submit" style="background:#1976D2;color:white;font-weight:bold;padding:0.9em 2em;border:none;border-radius:8px;font-size:1.1em;cursor:pointer;transition:background 0.2s;margin-top:1em;">Agregar</button>
+          </div>
         </form>
       </div>
     </section>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const inputFile = document.getElementById('imagen-file');
+  const label = document.querySelector('label[for="imagen-file"]');
+  const nombreArchivo = document.getElementById('nombre-archivo');
+  if (inputFile && label && nombreArchivo) {
+    label.addEventListener('keydown', function(e) {
+      if (e.key === 'Enter' || e.key === ' ') {
+        inputFile.click();
+      }
+    });
+    label.addEventListener('click', function() {
+      inputFile.click();
+    });
+    inputFile.addEventListener('change', function() {
+      if (inputFile.files.length > 0) {
+        nombreArchivo.textContent = inputFile.files[0].name;
+      } else {
+        nombreArchivo.textContent = '';
+      }
+    });
+  }
+});
+</script>
 
 <script src="{{ url_for('static', filename='js/sucursal.js') }}"></script>
 </main>
