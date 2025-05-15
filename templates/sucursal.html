@@ -38,15 +38,21 @@
     <section>
       <h1 class="Titulo"><span>Nuestras </span>Sucursales</h1>
       <h3>Conoce las sucursales  que hacen posible Ferremas</h3>
-      <ul class="lista">
-
-          <li>Local falcedad - av falcedad 3435</li>
-          <li>Local falcedad - av falcedad 3435</li>
-          <li>Local falcedad - av falcedad 3435</li>
-          <li>Local falcedad - av falcedad 3435</li>
-          <li>Local falcedad - av falcedad 3435</li>      
+      <ul class="lista" id="lista-sucursales">
+        <!-- Aquí se llenarán las sucursales dinámicamente -->
       </ul>
+      <div style="margin-top: 2em;">
+        <h4>Agregar nueva sucursal</h4>
+        <form id="form-agregar-sucursal">
+          <input type="text" id="nombre" placeholder="Nombre" required>
+          <input type="text" id="direccion" placeholder="Dirección" required>
+          <input type="text" id="telefono" placeholder="Teléfono" required>
+          <button type="submit">Agregar</button>
+        </form>
+      </div>
     </section>
+
+<script src="{{ url_for('static', filename='js/sucursal.js') }}"></script>
 </main>
 
   <footer class="footer">

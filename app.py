@@ -9,6 +9,7 @@ from db import obtener_conexion  # Se asume que db.py define la función obtener
 
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 from api.herramientas_manuales import herramientas_manual_bp
+from routes.apiSucursales import sucursales_bp
 
 # Probar conexión inicial para asegurar que MySQL está accesible
 
@@ -16,8 +17,7 @@ obtener_conexion()
 
 app = Flask(__name__)
 
-
-
+app.register_blueprint(sucursales_bp)
 
 # Define la ruta de la carpeta donde se encuentran archivos JSON (modifícala según tu estructura)
 ruta_carpeta = "json_data"  # Ejemplo: la carpeta "json_data" en el directorio raíz del proyecto
@@ -95,3 +95,6 @@ def vista_inventario():
 
 if __name__ == "__main__":
     app.run(debug=True, port=3000)
+
+
+
