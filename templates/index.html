@@ -83,18 +83,40 @@
 
     
           <!-- Sección Sobre Nosotros -->
-    <section onclick="window.location.href='nosotros.html'" style="background:rgba(15,22,40,0.92);border-radius:22px;padding:2.5em 1.5em 2em 1.5em;margin-bottom:2.5em;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;transition:box-shadow 0.2s;box-shadow:0 4px 24px #18284822;max-width:1100px;margin-left:auto;margin-right:auto;">
-      <h2 style="font-size:2.5em;color:#fff;margin-bottom:1.2em;font-weight:900;letter-spacing:1px;font-family:'Krub', sans-serif;text-align:center;width:100%;">Sobre Nosotros</h2>
-      <div style="display:flex;flex-direction:row;align-items:center;justify-content:center;gap:2.5em;width:100%;">
-        <div style="flex:0 0 520px;min-width:320px;max-width:600px;display:flex;justify-content:flex-start;">
-          <img src="static/img/nosotros01.webp" alt="Equipo Ferremas" style="width:100%;max-width:600px;height:320px;object-fit:cover;border-radius:18px;box-shadow:0 4px 24px #18284822;">
-        </div>
-        <div style="flex:1 1 320px;min-width:220px;max-width:600px;display:flex;flex-direction:column;align-items:flex-start;justify-content:center;">
-          <p style="font-size:1.1em;color:#fff;text-align:left;max-width:600px;">Soy Roberto, llevo 5 años trabajando en FERREMAS y durante este tiempo he aprendido mucho sobre herramientas, materiales y atención al cliente. Gracias a la experiencia y al apoyo del equipo, he mejorado mis habilidades y disfruto ayudar a cada persona que visita nuestra ferretería. Aquí, cada día es una oportunidad para crecer y aportar lo mejor de mí.</p>
-        </div>
+<a href="{{ url_for('vista_nosotros')}}"style="text-decoration:none;width:100%;display:block;">
+  <section style="background:rgba(15,22,40,0.92);border-radius:0 22px 22px 0;padding:0.7em 1em 0.7em 1em;margin-bottom:1.2em;display:flex;flex-direction:column;align-items:flex-start;justify-content:center;transition:box-shadow 0.2s;box-shadow:0 4px 24px #18284822;max-width:900px;margin-left:0;margin-right:auto;border-top-left-radius:0;border-bottom-left-radius:0;cursor:pointer;">
+    <h2 style="font-size:2.5em;color:#fff;margin-bottom:1.2em;font-weight:900;letter-spacing:1px;font-family:'Krub', sans-serif;text-align:center;width:100%;">Sobre Nosotros</h2>
+    <div style="display:flex;flex-direction:row;align-items:center;justify-content:flex-start;gap:2.5em;width:100%;">
+      <div style="flex:0 0 520px;min-width:320px;max-width:600px;display:flex;justify-content:flex-start;">
+        <img src="static/img/index01.webp" alt="Equipo Ferremas" style="width:100%;max-width:600px;height:320px;object-fit:cover;border-radius:18px;box-shadow:0 4px 24px #18284822;">
       </div>
-    </section>
-
+      <div style="flex:1 1 320px;min-width:220px;max-width:600px;display:flex;flex-direction:column;align-items:flex-start;justify-content:center;position:relative;">
+        <span style="position:absolute;inset:0;background:rgba(40,40,50,0.38);border-radius:12px;z-index:1;"></span>
+        <p style="font-size:1.1em;color:#fff;text-align:left;max-width:600px;position:relative;z-index:2;padding:1em 1.2em;box-shadow:0 6px 32px 0 rgba(60,60,70,0.22), 0 0 0 100vw rgba(60,60,70,0.18) inset;background:rgba(60,60,70,0.32);border-radius:12px;backdrop-filter:blur(1px);">
+          Mi nombre es Camilo y desde hace 5 años formo parte de FERREMAS. Lo que más disfruto de mi trabajo es poder asesorar a quienes buscan soluciones para sus proyectos, compartir ideas y aprender cada día algo nuevo sobre herramientas y materiales. Me motiva el ambiente de compañerismo y el compromiso de todo el equipo para entregar siempre la mejor atención. En FERREMAS, cada cliente es una oportunidad para crecer y construir juntos.
+        </p>
+      </div>
+    </div>
+  </section>
+</a>
+<div style="height:2.5em;"></div>
+              <!-- Sección Sobre Sucursales -->
+<a href="{{ url_for('vista_sucursales')}}" style="text-decoration:none;width:100%;display:block;">
+  <section style="background:rgba(15,22,40,0.92);border-radius:22px 0 0 22px;padding:0.7em 0.7em 2em 1em;margin-bottom:1.2em;display:flex;flex-direction:column;align-items:flex-end;justify-content:center;transition:box-shadow 0.2s;box-shadow:0 4px 24px #18284822;max-width:900px;margin-right:0;margin-left:auto;border-top-right-radius:0;border-bottom-right-radius:0;cursor:pointer;">
+    <h2 style="font-size:2.5em;color:#fff;margin-bottom:1.2em;font-weight:900;letter-spacing:1px;font-family:'Krub', sans-serif;text-align:center;width:100%;">Nuestras Sucursales</h2>
+    <div style="display:flex;flex-direction:row;align-items:center;justify-content:flex-end;gap:2.5em;width:100%;">
+      <div style="flex:1 1 320px;min-width:220px;max-width:600px;display:flex;flex-direction:column;align-items:flex-start;justify-content:center;">
+        <p style="font-size:1.1em;color:#fff;text-align:left;max-width:600px;position:relative;z-index:2;padding:1em 1.2em;box-shadow:0 6px 32px 0 rgba(60,60,70,0.22), 0 0 0 100vw rgba(60,60,70,0.18) inset;background:rgba(60,60,70,0.32);border-radius:12px;backdrop-filter:blur(1px);">
+          En FERREMAS contamos con una red de sucursales modernas y bien equipadas, ubicadas estratégicamente para estar siempre cerca de ti. Cada sucursal está atendida por un equipo profesional y comprometido, listo para ayudarte a encontrar las mejores soluciones para tus proyectos. Visítanos y vive la experiencia FERREMAS: atención personalizada, variedad, calidad y confianza en cada compra.
+        </p>
+      </div>
+      <div style="flex:0 0 520px;min-width:320px;max-width:600px;display:flex;justify-content:flex-end;">
+        <img src="static/img/index02.webp" alt="Equipo Ferremas" style="width:100%;max-width:600px;height:320px;object-fit:cover;border-radius:18px;box-shadow:0 4px 24px #18284822;">
+      </div>
+    </div>
+  </section>
+</a>
+    
   </main>
 
   <footer class="footer">
