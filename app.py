@@ -11,13 +11,14 @@ sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 from api.herramientas_manuales import herramientas_manual_bp
 from routes.apiSucursales import sucursales_bp
 from routes.apiTrabajadores import trabajadores_bp  # <-- Registro automático
+from routes.apiProductos import productos_bp
 
 # Probar conexión inicial para asegurar que MySQL está accesible
 
 obtener_conexion()
 
 app = Flask(__name__)
-
+app.register_blueprint(productos_bp)
 app.register_blueprint(sucursales_bp)
 app.register_blueprint(trabajadores_bp)  # <-- Registro automático
 
