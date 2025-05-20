@@ -54,7 +54,7 @@
 <!-- Aca ira la api -->
      <section style="background:rgba(15,22,40,0.92);border-radius:22px;padding:2.5em 1.5em 2em 1.5em;margin-bottom:2.5em;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;">
       <h1 class="Titulo" style="font-size:2.5em;color:#fff;margin-bottom:1.2em;font-weight:900;letter-spacing:1px;font-family:'Krub', sans-serif;text-align:center;width:100%;">Herramientas</h1>
-      <ul id="lista-productos" class="lista"></ul>
+      <ul id="lista-productos" class="lista" style="list-style:none;padding:0;margin:0;min-height:120px;"></ul>
     </section>
     <!-- Formulario para crear nuevo producto en sección separada -->
     <section style="background:#f6fcf7;border-radius:18px;box-shadow:0 2px 12px #18284833;padding:2.5em 2em 2em 2em;max-width:900px;width:100%;margin:0 auto 2.5em auto;display:flex;flex-direction:column;align-items:center;">
@@ -67,7 +67,6 @@
         </div>
         <div style="display:flex;flex-wrap:wrap;gap:1.2em;width:100%;justify-content:center;">
           <input type="number" name="precio" placeholder="Precio" min="0" required style="flex:1 1 120px;min-width:100px;padding:0.9em 1.2em;border-radius:8px;border:1px solid #b0c4de;font-size:1.1em;outline:none;">
-          <input type="number" name="cantidad" placeholder="Cantidad (no funcional)" min="1" style="flex:1 1 100px;min-width:80px;padding:0.9em 1.2em;border-radius:8px;border:1px solid #b0c4de;font-size:1.1em;outline:none;">
           <select id="select-imagen-producto" name="imagen" style="flex:2 1 220px;min-width:180px;padding:0.9em 1.2em;border-radius:8px;border:1px solid #b0c4de;font-size:1.1em;outline:none;">
             <option value="" selected disabled>Selecciona imagen (opcional)</option>
             <option value="static/img/Herramienta01.webp">Herramienta01.webp</option>
@@ -76,18 +75,13 @@
             <option value="static/img/Herramienta04.webp">Herramienta04.webp</option>
             <option value="static/img/Herramienta05.webp">Herramienta05.webp</option>
             <option value="static/img/Herramienta06.webp">Herramienta06.webp</option>
+            <option value="static/img/HerramientasVisual.webp">HerramientasAgregar01.webp</option>
+            <option value="static/img/HerramientasVisual.webp">HerramientasAgregar02.webp</option>
+            <option value="static/img/HerramientasVisual.webp">HerramientasAgregar03.webp</option>
             <option value="static/img/HerramientasVisual.webp">HerramientasVisual.webp</option>
           </select>
         </div>
-        <textarea name="descripcion" placeholder="Descripción" rows="2" required style="width:100%;padding:0.9em 1.2em;border-radius:8px;border:1px solid #b0c4de;font-size:1.1em;resize:vertical;outline:none;"></textarea>
-        <div style="width:100%;display:flex;flex-direction:column;align-items:flex-start;gap:0.5em;">
-          <label style="color:#457b9d;font-weight:bold;font-size:1.1em;">Sucursales donde estará disponible (no funcional):</label>
-          <div style="display:flex;gap:1em;flex-wrap:wrap;">
-            <label><input type="checkbox" name="sucursales" value="Sucursal 1" disabled> Sucursal 1</label>
-            <label><input type="checkbox" name="sucursales" value="Sucursal 2" disabled> Sucursal 2</label>
-            <label><input type="checkbox" name="sucursales" value="Sucursal 3" disabled> Sucursal 3</label>
-          </div>
-        </div>
+  
         <button type="submit" style="background:#43aa8b;color:#fff;border:none;border-radius:8px;padding:1em 2.5em;font-weight:bold;font-size:1.2em;cursor:pointer;transition:background 0.2s;margin-top:0.5em;">Crear Producto</button>
         <div id="form-producto-mensaje" style="margin-top:0.7em;font-size:1em;font-weight:bold;color:#e63946;display:none;"></div>
       </form>
@@ -103,3 +97,4 @@
   <script src="../static/js/Inventario.js"></script>
 </body>
 </html>
+``` 

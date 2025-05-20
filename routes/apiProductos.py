@@ -61,12 +61,30 @@ def get_productos():
     finally:
         conexion.close()
 
+@productos_bp.route('/inventario_stock', methods=['GET'])
+def inventario_stock():
+    conexion = obtener_conexion()
+    try:
+        cursor = conexion.cursor(dictionary=True)
+        cursor.execute('''
+            SELECT i.idInventario, i.idSucursal, i.idProducto, i.cantidad, s.nombre as sucursal
+            FROM Inventario i
+            JOIN Sucursales s ON i.idSucursal = s.idSucursal
+        ''')
+        stock = cursor.fetchall()
+        return jsonify(stock)
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+    finally:
+        conexion.close()
+
 # POST: Crear un nuevo producto
 @productos_bp.route('/productos', methods=['POST'])
 def crear_producto():
     """
     Crea un nuevo producto en la base de datos.
     Si ya existe un producto con el mismo nombre (ignorando mayúsculas/minúsculas), devuelve un mensaje de advertencia y los datos del producto existente.
+    Además, registra el stock inicial por sucursal en la tabla Inventario si se recibe el campo sucursalesStock.
     """
     data = request.get_json()
     nombre = data.get('nombre')
@@ -75,6 +93,7 @@ def crear_producto():
     idProveedor = data.get('idProveedor')
     idCategoria = data.get('idCategoria')
     imagen = data.get('imagen')
+    sucursalesStock = data.get('sucursalesStock', [])
     if not nombre or not descripcion or not precio or not idProveedor or not idCategoria:
         return jsonify({'error': 'Faltan datos obligatorios'}), 400
     conexion = obtener_conexion()
@@ -90,7 +109,59 @@ def crear_producto():
         cursor.execute('INSERT INTO productos (nombre, descripcion, precio, idProveedor, idCategoria, imagen) VALUES (%s, %s, %s, %s, %s, %s)',
                        (nombre, descripcion, precio, idProveedor, idCategoria, imagen))
         conexion.commit()
+        # Obtener el idProducto recién creado
+        cursor.execute('SELECT LAST_INSERT_ID() as idProducto')
+        idProducto = cursor.fetchone()[0]
+        # Insertar stock por sucursal en Inventario
+        if sucursalesStock and isinstance(sucursalesStock, list):
+            for stock in sucursalesStock:
+                idSucursal = stock.get('idSucursal')
+                cantidad = stock.get('cantidad')
+                if idSucursal and cantidad and cantidad > 0:
+                    cursor.execute('INSERT INTO Inventario (idSucursal, idProducto, cantidad) VALUES (%s, %s, %s)',
+                                   (idSucursal, idProducto, cantidad))
+            conexion.commit()
         return jsonify({'mensaje': 'Producto creado correctamente'}), 201
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+    finally:
+        conexion.close()
+
+# POST: Descontar stock de un producto en una sucursal
+@productos_bp.route('/descontar_stock', methods=['POST'])
+def descontar_stock():
+    """
+    Descuenta stock de un producto en una sucursal específica.
+    Recibe: idProducto, nombreSucursal, cantidad
+    """
+    data = request.get_json()
+    idProducto = data.get('idProducto')
+    nombreSucursal = data.get('nombreSucursal')
+    cantidad = data.get('cantidad')
+    if not idProducto or not nombreSucursal or not cantidad:
+        return jsonify({'error': 'Faltan datos obligatorios'}), 400
+    conexion = obtener_conexion()
+    try:
+        cursor = conexion.cursor(dictionary=True)
+        # Buscar idSucursal por nombre
+        cursor.execute('SELECT idSucursal FROM Sucursales WHERE nombre = %s', (nombreSucursal,))
+        sucursal = cursor.fetchone()
+        if not sucursal:
+            return jsonify({'error': 'Sucursal no encontrada'}), 404
+        idSucursal = sucursal['idSucursal']
+        # Buscar stock actual
+        cursor.execute('SELECT cantidad FROM Inventario WHERE idProducto = %s AND idSucursal = %s', (idProducto, idSucursal))
+        inventario = cursor.fetchone()
+        if not inventario:
+            return jsonify({'error': 'No hay stock registrado para este producto en la sucursal seleccionada.'}), 404
+        stock_actual = inventario['cantidad']
+        if cantidad > stock_actual:
+            return jsonify({'error': 'No hay suficiente stock en la sucursal seleccionada.'}), 400
+        # Descontar stock
+        nuevo_stock = stock_actual - cantidad
+        cursor.execute('UPDATE Inventario SET cantidad = %s WHERE idProducto = %s AND idSucursal = %s', (nuevo_stock, idProducto, idSucursal))
+        conexion.commit()
+        return jsonify({'success': True, 'nuevo_stock': nuevo_stock})
     except Exception as e:
         return jsonify({'error': str(e)}), 500
     finally:
@@ -102,6 +173,8 @@ def actualizar_producto(idProducto):
     """
     Actualiza un producto existente por su idProducto.
     Espera un JSON con los campos a actualizar: nombre, descripcion, precio, idProveedor, idCategoria, imagen (opcional).
+    Si se recibe sucursalesStock (array no vacío), actualiza el stock por sucursal.
+    Si no se recibe sucursalesStock, conserva el stock anterior.
     """
     data = request.get_json()
     conexion = obtener_conexion()
@@ -109,6 +182,16 @@ def actualizar_producto(idProducto):
         cursor = conexion.cursor()
         cursor.execute('UPDATE productos SET nombre=%s, descripcion=%s, precio=%s, idProveedor=%s, idCategoria=%s, imagen=%s WHERE idProducto=%s',
                        (data.get('nombre'), data.get('descripcion'), data.get('precio'), data.get('idProveedor'), data.get('idCategoria'), data.get('imagen'), idProducto))
+        # --- SOLO actualizar stock si se recibe un array válido y no vacío ---
+        sucursalesStock = data.get('sucursalesStock')
+        if sucursalesStock and isinstance(sucursalesStock, list) and len(sucursalesStock) > 0:
+            cursor.execute('DELETE FROM Inventario WHERE idProducto = %s', (idProducto,))
+            for stock in sucursalesStock:
+                idSucursal = stock.get('idSucursal')
+                cantidad = stock.get('cantidad')
+                if idSucursal and cantidad and cantidad > 0:
+                    cursor.execute('INSERT INTO Inventario (idSucursal, idProducto, cantidad) VALUES (%s, %s, %s)',
+                                   (idSucursal, idProducto, cantidad))
         conexion.commit()
         return jsonify({'mensaje': 'Producto actualizado correctamente'})
     except Exception as e:
@@ -125,6 +208,9 @@ def eliminar_producto(idProducto):
     conexion = obtener_conexion()
     try:
         cursor = conexion.cursor()
+        # Eliminar primero el inventario relacionado
+        cursor.execute('DELETE FROM Inventario WHERE idProducto=%s', (idProducto,))
+        # Luego eliminar el producto
         cursor.execute('DELETE FROM productos WHERE idProducto=%s', (idProducto,))
         conexion.commit()
         return jsonify({'mensaje': 'Producto eliminado correctamente'})
