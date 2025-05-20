@@ -220,92 +220,202 @@ function cargarSucursales() {
           btnEditar.style.boxShadow = '0 2px 8px #0002';
           btnEditar.style.minWidth = '100px';
           btnEditar.onclick = function() {
-            const nuevoNombre = prompt('Nuevo nombre:', idSucursal.nombre);
-            const nuevaDireccion = prompt('Nueva dirección:', idSucursal.direccion);
-            const nuevoTelefono = prompt('Nuevo teléfono:', idSucursal.telefono);
-            // Selector visual para imagen
-            let nuevaImagen = idSucursal.imagen || '';
-            let selectorImagen = document.createElement('select');
-            selectorImagen.style.margin = '1em 0';
-            selectorImagen.style.fontSize = '1em';
-            const optionDefault = document.createElement('option');
-            optionDefault.value = '';
-            optionDefault.textContent = 'No cambiar imagen';
-            selectorImagen.appendChild(optionDefault);
-            (window.imagenesProyecto || []).forEach(img => {
-              const opt = document.createElement('option');
-              opt.value = img;
-              opt.textContent = img.replace('static/img/', '');
-              if (img === idSucursal.imagen) opt.selected = true;
-              selectorImagen.appendChild(opt);
-            });
-            // Mostrar prompt visual para imagen
+            // Modal visual moderno para editar sucursal
             const modal = document.createElement('div');
             modal.style.position = 'fixed';
             modal.style.top = '0';
             modal.style.left = '0';
             modal.style.width = '100vw';
             modal.style.height = '100vh';
-            modal.style.background = 'rgba(0,0,0,0.7)';
+            modal.style.background = 'rgba(24,40,72,0.85)';
             modal.style.display = 'flex';
             modal.style.alignItems = 'center';
             modal.style.justifyContent = 'center';
-            modal.style.zIndex = '9999';
+            modal.style.zIndex = '10000';
             const inner = document.createElement('div');
             inner.style.background = '#fff';
-            inner.style.padding = '2em';
-            inner.style.borderRadius = '12px';
+            inner.style.borderRadius = '22px';
+            inner.style.boxShadow = '0 2px 24px #18284855';
+            inner.style.padding = '2.5em 2em 2em 2em';
             inner.style.display = 'flex';
             inner.style.flexDirection = 'column';
             inner.style.alignItems = 'center';
-            inner.innerHTML = `<h3 style='margin-bottom:1em'>Editar imagen de sucursal</h3>`;
-            inner.appendChild(selectorImagen);
-            const btnOk = document.createElement('button');
-            btnOk.textContent = 'Guardar cambios';
-            btnOk.style.margin = '1em 0 0 0';
-            btnOk.style.background = '#1976D2';
-            btnOk.style.color = 'white';
-            btnOk.style.border = 'none';
-            btnOk.style.borderRadius = '6px';
-            btnOk.style.padding = '0.6em 1.5em';
-            btnOk.style.fontSize = '1em';
-            btnOk.style.cursor = 'pointer';
-            btnOk.onclick = function() {
-              nuevaImagen = selectorImagen.value || idSucursal.imagen;
-              document.body.removeChild(modal);
-              if (nuevoNombre && nuevaDireccion && nuevoTelefono) {
-                btnEditar.disabled = true;
-                btnEditar.textContent = 'Editando...';
-                fetch(`/sucursales/${idSucursal.idSucursal}`, {
-                  method: 'PUT',
-                  headers: { 'Content-Type': 'application/json' },
-                  body: JSON.stringify({ nombre: nuevoNombre, direccion: nuevaDireccion, telefono: nuevoTelefono, imagen: nuevaImagen })
-                })
-                .then(res => res.json())
-                .then(resp => {
-                  li.style.transition = 'background 0.3s';
-                  li.style.background = '#ffe066';
-                  setTimeout(() => cargarSucursales(), 400);
-                });
-              }
-            };
-            inner.appendChild(btnOk);
-            const btnCancel = document.createElement('button');
-            btnCancel.textContent = 'Cancelar';
-            btnCancel.style.margin = '0.5em 0 0 0';
-            btnCancel.style.background = '#e63946';
-            btnCancel.style.color = 'white';
-            btnCancel.style.border = 'none';
-            btnCancel.style.borderRadius = '6px';
-            btnCancel.style.padding = '0.6em 1.5em';
-            btnCancel.style.fontSize = '1em';
-            btnCancel.style.cursor = 'pointer';
-            btnCancel.onclick = function() {
-              document.body.removeChild(modal);
-            };
-            inner.appendChild(btnCancel);
+            inner.style.gap = '1.2em';
+            inner.style.minWidth = '420px';
+            inner.style.maxWidth = '600px';
+            inner.innerHTML = `<h3 style='color:#182848;font-size:1.5em;font-weight:900;margin-bottom:0.5em;'>Editar sucursal</h3>`;
+            // Formulario
+            const form = document.createElement('form');
+            form.style.display = 'flex';
+            form.style.flexDirection = 'column';
+            form.style.gap = '1.2em';
+            form.style.width = '100%';
+            // Fila 1: Nombre y Dirección
+            const fila1 = document.createElement('div');
+            fila1.style.display = 'flex';
+            fila1.style.gap = '1.2em';
+            fila1.style.width = '100%';
+            const inputNombre = document.createElement('input');
+            inputNombre.type = 'text';
+            inputNombre.placeholder = 'Nombre';
+            inputNombre.required = true;
+            inputNombre.value = idSucursal.nombre;
+            inputNombre.style.flex = '1 1 50%';
+            inputNombre.style.background = '#fff';
+            inputNombre.style.color = '#182848';
+            inputNombre.style.border = '1.5px solid #b0c4de';
+            inputNombre.style.borderRadius = '8px';
+            inputNombre.style.padding = '0.9em 1.2em';
+            inputNombre.style.fontSize = '1.1em';
+            const inputDireccion = document.createElement('input');
+            inputDireccion.type = 'text';
+            inputDireccion.placeholder = 'Dirección';
+            inputDireccion.required = true;
+            inputDireccion.value = idSucursal.direccion;
+            inputDireccion.style.flex = '1 1 50%';
+            inputDireccion.style.background = '#fff';
+            inputDireccion.style.color = '#182848';
+            inputDireccion.style.border = '1.5px solid #b0c4de';
+            inputDireccion.style.borderRadius = '8px';
+            inputDireccion.style.padding = '0.9em 1.2em';
+            inputDireccion.style.fontSize = '1.1em';
+            fila1.appendChild(inputNombre);
+            fila1.appendChild(inputDireccion);
+            // Fila 2: Teléfono y Selección de imagen
+            const fila2 = document.createElement('div');
+            fila2.style.display = 'flex';
+            fila2.style.gap = '1.2em';
+            fila2.style.width = '100%';
+            const inputTelefono = document.createElement('input');
+            inputTelefono.type = 'text';
+            inputTelefono.placeholder = 'Teléfono';
+            inputTelefono.required = true;
+            inputTelefono.value = idSucursal.telefono;
+            inputTelefono.style.flex = '1 1 50%';
+            inputTelefono.style.background = '#fff';
+            inputTelefono.style.color = '#182848';
+            inputTelefono.style.border = '1.5px solid #b0c4de';
+            inputTelefono.style.borderRadius = '8px';
+            inputTelefono.style.padding = '0.9em 1.2em';
+            inputTelefono.style.fontSize = '1.1em';
+            // Select imagen
+            const selectImagen = document.createElement('select');
+            selectImagen.id = 'imagen-edit';
+            selectImagen.name = 'imagen';
+            selectImagen.required = false;
+            selectImagen.style.flex = '1 1 50%';
+            selectImagen.style.background = '#fff';
+            selectImagen.style.color = '#182848';
+            selectImagen.style.border = '1.5px solid #b0c4de';
+            selectImagen.style.borderRadius = '8px';
+            selectImagen.style.padding = '0.9em 1.2em';
+            selectImagen.style.fontSize = '1.1em';
+            selectImagen.style.maxWidth = '220px';
+            selectImagen.style.minWidth = '120px';
+            selectImagen.style.overflow = 'hidden';
+            const optionDefault = document.createElement('option');
+            optionDefault.value = '';
+            optionDefault.textContent = 'Selecciona imagen';
+            optionDefault.disabled = true;
+            selectImagen.appendChild(optionDefault);
+            (window.imagenesProyecto || []).forEach(img => {
+              const opt = document.createElement('option');
+              opt.value = img;
+              opt.textContent = img.replace('static/img/', '');
+              if (idSucursal.imagen === img) opt.selected = true;
+              selectImagen.appendChild(opt);
+            });
+            fila2.appendChild(inputTelefono);
+            fila2.appendChild(selectImagen);
+            // Mensaje de error
+            const mensaje = document.createElement('div');
+            mensaje.style.color = '#e63946';
+            mensaje.style.fontWeight = 'bold';
+            mensaje.style.display = 'none';
+            // Botones
+            const contBotones = document.createElement('div');
+            contBotones.style.display = 'flex';
+            contBotones.style.gap = '1em';
+            contBotones.style.marginTop = '1em';
+            contBotones.style.justifyContent = 'center';
+            const btnGuardar = document.createElement('button');
+            btnGuardar.type = 'submit';
+            btnGuardar.innerText = 'Guardar Cambios';
+            btnGuardar.style.background = '#43aa8b';
+            btnGuardar.style.color = '#fff';
+            btnGuardar.style.border = 'none';
+            btnGuardar.style.borderRadius = '8px';
+            btnGuardar.style.padding = '1em 2.5em';
+            btnGuardar.style.fontWeight = 'bold';
+            btnGuardar.style.fontSize = '1.2em';
+            btnGuardar.style.cursor = 'pointer';
+            btnGuardar.style.transition = 'background 0.2s';
+            const btnCancelar = document.createElement('button');
+            btnCancelar.type = 'button';
+            btnCancelar.innerText = 'Cancelar';
+            btnCancelar.style.background = '#e63946';
+            btnCancelar.style.color = '#fff';
+            btnCancelar.style.border = 'none';
+            btnCancelar.style.borderRadius = '8px';
+            btnCancelar.style.padding = '1em 2.5em';
+            btnCancelar.style.fontWeight = 'bold';
+            btnCancelar.style.fontSize = '1.2em';
+            btnCancelar.style.cursor = 'pointer';
+            btnCancelar.style.transition = 'background 0.2s';
+            contBotones.appendChild(btnGuardar);
+            contBotones.appendChild(btnCancelar);
+            // Agregar filas y botones al formulario
+            form.appendChild(fila1);
+            form.appendChild(fila2);
+            form.appendChild(mensaje);
+            form.appendChild(contBotones);
+            inner.appendChild(form);
             modal.appendChild(inner);
             document.body.appendChild(modal);
+            // Cancelar
+            btnCancelar.onclick = function() {
+              document.body.removeChild(modal);
+            };
+            // Guardar cambios
+            form.onsubmit = function(ev) {
+              ev.preventDefault();
+              mensaje.style.display = 'none';
+              if (!inputNombre.value.trim() || !inputDireccion.value.trim() || !inputTelefono.value.trim()) {
+                mensaje.innerText = 'Completa todos los campos.';
+                mensaje.style.display = 'block';
+                return;
+              }
+              btnGuardar.disabled = true;
+              btnGuardar.textContent = 'Guardando...';
+              fetch(`/sucursales/${idSucursal.idSucursal}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                  nombre: inputNombre.value.trim(),
+                  direccion: inputDireccion.value.trim(),
+                  telefono: inputTelefono.value.trim(),
+                  imagen: selectImagen.value || idSucursal.imagen || ''
+                })
+              })
+              .then(res => res.json())
+              .then(data => {
+                if (data.mensaje) {
+                  document.body.removeChild(modal);
+                  cargarSucursales();
+                } else {
+                  mensaje.innerText = data.error || 'Error al editar la sucursal.';
+                  mensaje.style.display = 'block';
+                  btnGuardar.disabled = false;
+                  btnGuardar.textContent = 'Guardar Cambios';
+                }
+              })
+              .catch(() => {
+                mensaje.innerText = 'Error al editar la sucursal.';
+                mensaje.style.display = 'block';
+                btnGuardar.disabled = false;
+                btnGuardar.textContent = 'Guardar Cambios';
+              });
+            };
           };
 
           // Botón refrescar

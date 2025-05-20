@@ -85,138 +85,239 @@ function cargarSucursalesYTrabajadores() {
             btnEditar.style.cursor = 'pointer';
             btnEditar.style.fontWeight = 'bold';
             btnEditar.onclick = function() {
-              // Crear modal visual para edición
+              // Crear modal visual para edición de trabajador (igual que agregar)
               const modal = document.createElement('div');
               modal.style.position = 'fixed';
               modal.style.top = '0';
               modal.style.left = '0';
               modal.style.width = '100vw';
               modal.style.height = '100vh';
-              modal.style.background = 'rgba(0,0,0,0.5)';
+              modal.style.background = 'rgba(24,40,72,0.85)';
               modal.style.display = 'flex';
               modal.style.alignItems = 'center';
               modal.style.justifyContent = 'center';
-              modal.style.zIndex = '9999';
+              modal.style.zIndex = '10000';
               const inner = document.createElement('div');
-              inner.style.background = '#182848'; // Azul oscuro
-              inner.style.padding = '2em 2em 1.5em 2em';
-              inner.style.borderRadius = '14px';
+              inner.style.background = '#fff';
+              inner.style.borderRadius = '22px';
+              inner.style.boxShadow = '0 2px 24px #18284855';
+              inner.style.padding = '2.5em 2em 2em 2em';
               inner.style.display = 'flex';
               inner.style.flexDirection = 'column';
-              inner.style.gap = '1em';
-              inner.style.minWidth = '320px';
-              inner.style.boxShadow = '0 2px 12px #18284833';
-              inner.innerHTML = `<h3 style='color:#fff;margin-bottom:0.5em;'>Editar trabajador</h3>`;
-              // Campos
+              inner.style.alignItems = 'center';
+              inner.style.gap = '1.2em';
+              inner.style.minWidth = '420px';
+              inner.style.maxWidth = '600px';
+              inner.innerHTML = `<h3 style='color:#182848;font-size:1.5em;font-weight:900;margin-bottom:0.5em;'>Editar trabajador</h3>`;
+              // Formulario ordenado en filas
+              const form = document.createElement('form');
+              form.style.display = 'flex';
+              form.style.flexDirection = 'column';
+              form.style.gap = '1.2em';
+              form.style.width = '100%';
+              // Fila 1: Nombre y Apellido
+              const fila1 = document.createElement('div');
+              fila1.style.display = 'flex';
+              fila1.style.gap = '1.2em';
+              fila1.style.width = '100%';
               const inputNombre = document.createElement('input');
               inputNombre.type = 'text';
-              inputNombre.value = trab.nombre;
               inputNombre.placeholder = 'Nombre';
-              inputNombre.style.marginBottom = '0.5em';
+              inputNombre.required = true;
+              inputNombre.value = trab.nombre;
+              inputNombre.style.flex = '1 1 50%';
               inputNombre.style.background = '#fff';
               inputNombre.style.color = '#182848';
-              inputNombre.style.border = 'none';
-              inputNombre.style.borderRadius = '6px';
-              inputNombre.style.padding = '0.7em 1em';
-              inputNombre.style.fontSize = '1em';
+              inputNombre.style.border = '1.5px solid #b0c4de';
+              inputNombre.style.borderRadius = '8px';
+              inputNombre.style.padding = '0.9em 1.2em';
+              inputNombre.style.fontSize = '1.1em';
               const inputApellido = document.createElement('input');
               inputApellido.type = 'text';
-              inputApellido.value = trab.apellido;
               inputApellido.placeholder = 'Apellido';
-              inputApellido.style.marginBottom = '0.5em';
+              inputApellido.required = true;
+              inputApellido.value = trab.apellido;
+              inputApellido.style.flex = '1 1 50%';
               inputApellido.style.background = '#fff';
               inputApellido.style.color = '#182848';
-              inputApellido.style.border = 'none';
-              inputApellido.style.borderRadius = '6px';
-              inputApellido.style.padding = '0.7em 1em';
-              inputApellido.style.fontSize = '1em';
+              inputApellido.style.border = '1.5px solid #b0c4de';
+              inputApellido.style.borderRadius = '8px';
+              inputApellido.style.padding = '0.9em 1.2em';
+              inputApellido.style.fontSize = '1.1em';
+              fila1.appendChild(inputNombre);
+              fila1.appendChild(inputApellido);
+              // Fila 2: Cargo y Fecha
+              const fila2 = document.createElement('div');
+              fila2.style.display = 'flex';
+              fila2.style.gap = '1.2em';
+              fila2.style.width = '100%';
               const inputCargo = document.createElement('input');
               inputCargo.type = 'text';
-              inputCargo.value = trab.cargo;
               inputCargo.placeholder = 'Cargo';
-              inputCargo.style.marginBottom = '0.5em';
+              inputCargo.required = true;
+              inputCargo.value = trab.cargo;
+              inputCargo.style.flex = '1 1 60%';
               inputCargo.style.background = '#fff';
               inputCargo.style.color = '#182848';
-              inputCargo.style.border = 'none';
-              inputCargo.style.borderRadius = '6px';
-              inputCargo.style.padding = '0.7em 1em';
-              inputCargo.style.fontSize = '1em';
+              inputCargo.style.border = '1.5px solid #b0c4de';
+              inputCargo.style.borderRadius = '8px';
+              inputCargo.style.padding = '0.9em 1.2em';
+              inputCargo.style.fontSize = '1.1em';
               const inputFecha = document.createElement('input');
               inputFecha.type = 'date';
-              inputFecha.value = trab.fecha_contratacion ? trab.fecha_contratacion.substring(0,10) : '';
-              inputFecha.style.marginBottom = '0.5em';
+              inputFecha.required = true;
+              // Usar la fecha tal cual viene del backend (YYYY-MM-DD)
+              inputFecha.value = trab.fecha_contratacion ? trab.fecha_contratacion.slice(0,10) : (() => {
+                const hoy = new Date();
+                const yyyy = hoy.getFullYear();
+                const mm = String(hoy.getMonth() + 1).padStart(2, '0');
+                const dd = String(hoy.getDate()).padStart(2, '0');
+                return `${yyyy}-${mm}-${dd}`;
+              })();
+              inputFecha.style.flex = '1 1 40%';
               inputFecha.style.background = '#fff';
               inputFecha.style.color = '#182848';
-              inputFecha.style.border = 'none';
-              inputFecha.style.borderRadius = '6px';
-              inputFecha.style.padding = '0.7em 1em';
-              inputFecha.style.fontSize = '1em';
+              inputFecha.style.border = '1.5px solid #b0c4de';
+              inputFecha.style.borderRadius = '8px';
+              inputFecha.style.padding = '0.9em 1.2em';
+              inputFecha.style.fontSize = '1.1em';
+              fila2.appendChild(inputCargo);
+              fila2.appendChild(inputFecha);
+              // Fila 3: Sueldo y Sucursal
+              const fila3 = document.createElement('div');
+              fila3.style.display = 'flex';
+              fila3.style.gap = '1.2em';
+              fila3.style.width = '100%';
               const inputSueldo = document.createElement('input');
               inputSueldo.type = 'number';
-              inputSueldo.value = trab.sueldo;
               inputSueldo.placeholder = 'Sueldo';
-              inputSueldo.style.marginBottom = '0.5em';
+              inputSueldo.required = true;
+              inputSueldo.min = '0';
+              inputSueldo.value = trab.sueldo || '';
+              inputSueldo.style.flex = '1 1 60%';
               inputSueldo.style.background = '#fff';
               inputSueldo.style.color = '#182848';
-              inputSueldo.style.border = 'none';
-              inputSueldo.style.borderRadius = '6px';
-              inputSueldo.style.padding = '0.7em 1em';
-              inputSueldo.style.fontSize = '1em';
-              // Botón guardar
+              inputSueldo.style.border = '1.5px solid #b0c4de';
+              inputSueldo.style.borderRadius = '8px';
+              inputSueldo.style.padding = '0.9em 1.2em';
+              inputSueldo.style.fontSize = '1.1em';
+              const selectSucursal = document.createElement('select');
+              selectSucursal.required = true;
+              selectSucursal.style.flex = '1 1 40%';
+              selectSucursal.style.background = '#fff';
+              selectSucursal.style.color = '#182848';
+              selectSucursal.style.border = '1.5px solid #b0c4de';
+              selectSucursal.style.borderRadius = '8px';
+              selectSucursal.style.padding = '0.9em 1.2em';
+              selectSucursal.style.fontSize = '1.1em';
+              selectSucursal.style.maxWidth = '220px'; // Limita el ancho máximo
+              selectSucursal.style.minWidth = '120px'; // Ancho mínimo para responsividad
+              selectSucursal.style.overflow = 'hidden';
+              // Opciones de sucursal
+              fetch('/sucursales').then(res => res.json()).then(sucursales => {
+                selectSucursal.innerHTML = '';
+                sucursales.forEach(sucOpt => {
+                  const opt = document.createElement('option');
+                  opt.value = sucOpt.idSucursal;
+                  opt.textContent = sucOpt.nombre;
+                  if (trab.idSucursal == sucOpt.idSucursal) opt.selected = true;
+                  selectSucursal.appendChild(opt);
+                });
+              });
+              fila3.appendChild(inputSueldo);
+              fila3.appendChild(selectSucursal);
+              // Mensaje de error
+              const mensaje = document.createElement('div');
+              mensaje.style.color = '#e63946';
+              mensaje.style.fontWeight = 'bold';
+              mensaje.style.display = 'none';
+              // Botones
+              const contBotones = document.createElement('div');
+              contBotones.style.display = 'flex';
+              contBotones.style.gap = '1em';
+              contBotones.style.marginTop = '1em';
+              contBotones.style.justifyContent = 'center';
               const btnGuardar = document.createElement('button');
-              btnGuardar.textContent = 'Guardar';
+              btnGuardar.type = 'submit';
+              btnGuardar.innerText = 'Guardar Cambios';
               btnGuardar.style.background = '#43aa8b';
-              btnGuardar.style.color = 'white';
+              btnGuardar.style.color = '#fff';
               btnGuardar.style.border = 'none';
-              btnGuardar.style.borderRadius = '6px';
-              btnGuardar.style.padding = '0.5em 1.3em';
-              btnGuardar.style.cursor = 'pointer';
+              btnGuardar.style.borderRadius = '8px';
+              btnGuardar.style.padding = '1em 2.5em';
               btnGuardar.style.fontWeight = 'bold';
-              btnGuardar.onclick = function() {
-                if (inputNombre.value && inputApellido.value && inputCargo.value && inputFecha.value && inputSueldo.value) {
-                  btnGuardar.disabled = true;
-                  btnGuardar.textContent = 'Editando...';
-                  fetch(`/trabajadores/${trab.idTrabajador}`, {
-                    method: 'PUT',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                      nombre: inputNombre.value,
-                      apellido: inputApellido.value,
-                      cargo: inputCargo.value,
-                      fecha_contratacion: inputFecha.value,
-                      sueldo: parseFloat(inputSueldo.value),
-                      idSucursal: suc.idSucursal
-                    })
-                  })
-                  .then(res => res.json())
-                  .then(() => {
-                    document.body.removeChild(modal);
-                    cargarSucursalesYTrabajadores();
-                  });
-                }
-              };
-              // Botón cancelar
+              btnGuardar.style.fontSize = '1.2em';
+              btnGuardar.style.cursor = 'pointer';
+              btnGuardar.style.transition = 'background 0.2s';
               const btnCancelar = document.createElement('button');
-              btnCancelar.textContent = 'Cancelar';
+              btnCancelar.type = 'button';
+              btnCancelar.innerText = 'Cancelar';
               btnCancelar.style.background = '#e63946';
-              btnCancelar.style.color = 'white';
+              btnCancelar.style.color = '#fff';
               btnCancelar.style.border = 'none';
-              btnCancelar.style.borderRadius = '6px';
-              btnCancelar.style.padding = '0.5em 1.3em';
-              btnCancelar.style.cursor = 'pointer';
+              btnCancelar.style.borderRadius = '8px';
+              btnCancelar.style.padding = '1em 2.5em';
               btnCancelar.style.fontWeight = 'bold';
+              btnCancelar.style.fontSize = '1.2em';
+              btnCancelar.style.cursor = 'pointer';
+              btnCancelar.style.transition = 'background 0.2s';
+              contBotones.appendChild(btnGuardar);
+              contBotones.appendChild(btnCancelar);
+              // Agregar filas y botones al formulario
+              form.appendChild(fila1);
+              form.appendChild(fila2);
+              form.appendChild(fila3);
+              form.appendChild(mensaje);
+              form.appendChild(contBotones);
+              inner.appendChild(form);
+              modal.appendChild(inner);
+              document.body.appendChild(modal);
+              // Cancelar
               btnCancelar.onclick = function() {
                 document.body.removeChild(modal);
               };
-              inner.appendChild(inputNombre);
-              inner.appendChild(inputApellido);
-              inner.appendChild(inputCargo);
-              inner.appendChild(inputFecha);
-              inner.appendChild(inputSueldo);
-              inner.appendChild(btnGuardar);
-              inner.appendChild(btnCancelar);
-              modal.appendChild(inner);
-              document.body.appendChild(modal);
+              // Guardar cambios
+              form.onsubmit = function(ev) {
+                ev.preventDefault();
+                mensaje.style.display = 'none';
+                if (!inputNombre.value.trim() || !inputApellido.value.trim() || !inputCargo.value.trim() || !inputFecha.value || !inputSueldo.value || !selectSucursal.value) {
+                  mensaje.innerText = 'Completa todos los campos.';
+                  mensaje.style.display = 'block';
+                  return;
+                }
+                btnGuardar.disabled = true;
+                btnGuardar.textContent = 'Guardando...';
+                fetch(`/trabajadores/${trab.idTrabajador}`, {
+                  method: 'PUT',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify({
+                    nombre: inputNombre.value.trim(),
+                    apellido: inputApellido.value.trim(),
+                    cargo: inputCargo.value.trim(),
+                    fecha_contratacion: inputFecha.value,
+                    sueldo: Number(inputSueldo.value),
+                    idSucursal: Number(selectSucursal.value)
+                  })
+                })
+                .then(res => res.json())
+                .then(data => {
+                  if (data.mensaje) {
+                    document.body.removeChild(modal);
+                    cargarSucursalesYTrabajadores();
+                  } else {
+                    mensaje.innerText = data.error || 'Error al editar el trabajador.';
+                    mensaje.style.display = 'block';
+                    btnGuardar.disabled = false;
+                    btnGuardar.textContent = 'Guardar Cambios';
+                  }
+                })
+                .catch(() => {
+                  mensaje.innerText = 'Error al editar el trabajador.';
+                  mensaje.style.display = 'block';
+                  btnGuardar.disabled = false;
+                  btnGuardar.textContent = 'Guardar Cambios';
+                });
+              };
             };
             // Botón borrar
             const btnBorrar = document.createElement('button');
@@ -287,127 +388,202 @@ function cargarSucursalesYTrabajadores() {
           modal.style.left = '0';
           modal.style.width = '100vw';
           modal.style.height = '100vh';
-          modal.style.background = 'rgba(0,0,0,0.5)';
+          modal.style.background = 'rgba(24,40,72,0.85)';
           modal.style.display = 'flex';
           modal.style.alignItems = 'center';
           modal.style.justifyContent = 'center';
-          modal.style.zIndex = '9999';
+          modal.style.zIndex = '10000';
           const inner = document.createElement('div');
-          inner.style.background = '#182848'; // Azul oscuro
-          inner.style.padding = '2em 2em 1.5em 2em';
-          inner.style.borderRadius = '14px';
+          inner.style.background = '#fff';
+          inner.style.borderRadius = '22px';
+          inner.style.boxShadow = '0 2px 24px #18284855';
+          inner.style.padding = '2.5em 2em 2em 2em';
           inner.style.display = 'flex';
           inner.style.flexDirection = 'column';
-          inner.style.gap = '1em';
-          inner.style.minWidth = '320px';
-          inner.style.boxShadow = '0 2px 12px #18284833';
-          inner.innerHTML = `<h3 style='color:#fff;margin-bottom:0.5em;'>Agregar trabajador</h3>`;
-          // Campos
+          inner.style.alignItems = 'center';
+          inner.style.gap = '1.2em';
+          inner.style.minWidth = '420px'; // Más ancho
+          inner.style.maxWidth = '600px';
+          inner.innerHTML = `<h3 style='color:#182848;font-size:1.5em;font-weight:900;margin-bottom:0.5em;'>Agregar trabajador</h3>`;
+          // Formulario ordenado
+          const form = document.createElement('form');
+          form.style.display = 'flex';
+          form.style.flexDirection = 'column';
+          form.style.gap = '1.2em';
+          form.style.width = '100%';
+          // Fila 1: Nombre y Apellido
+          const fila1 = document.createElement('div');
+          fila1.style.display = 'flex';
+          fila1.style.gap = '1.2em';
+          fila1.style.width = '100%';
           const inputNombre = document.createElement('input');
           inputNombre.type = 'text';
           inputNombre.placeholder = 'Nombre';
-          inputNombre.style.marginBottom = '0.5em';
+          inputNombre.required = true;
+          inputNombre.style.flex = '1 1 50%';
           inputNombre.style.background = '#fff';
           inputNombre.style.color = '#182848';
-          inputNombre.style.border = 'none';
-          inputNombre.style.borderRadius = '6px';
-          inputNombre.style.padding = '0.7em 1em';
-          inputNombre.style.fontSize = '1em';
+          inputNombre.style.border = '1.5px solid #b0c4de';
+          inputNombre.style.borderRadius = '8px';
+          inputNombre.style.padding = '0.9em 1.2em';
+          inputNombre.style.fontSize = '1.1em';
           const inputApellido = document.createElement('input');
           inputApellido.type = 'text';
           inputApellido.placeholder = 'Apellido';
-          inputApellido.style.marginBottom = '0.5em';
+          inputApellido.required = true;
+          inputApellido.style.flex = '1 1 50%';
           inputApellido.style.background = '#fff';
           inputApellido.style.color = '#182848';
-          inputApellido.style.border = 'none';
-          inputApellido.style.borderRadius = '6px';
-          inputApellido.style.padding = '0.7em 1em';
-          inputApellido.style.fontSize = '1em';
+          inputApellido.style.border = '1.5px solid #b0c4de';
+          inputApellido.style.borderRadius = '8px';
+          inputApellido.style.padding = '0.9em 1.2em';
+          inputApellido.style.fontSize = '1.1em';
+          fila1.appendChild(inputNombre);
+          fila1.appendChild(inputApellido);
+          // Fila 2: Cargo y Fecha
+          const fila2 = document.createElement('div');
+          fila2.style.display = 'flex';
+          fila2.style.gap = '1.2em';
+          fila2.style.width = '100%';
           const inputCargo = document.createElement('input');
           inputCargo.type = 'text';
           inputCargo.placeholder = 'Cargo';
-          inputCargo.style.marginBottom = '0.5em';
+          inputCargo.required = true;
+          inputCargo.style.flex = '1 1 60%';
           inputCargo.style.background = '#fff';
           inputCargo.style.color = '#182848';
-          inputCargo.style.border = 'none';
-          inputCargo.style.borderRadius = '6px';
-          inputCargo.style.padding = '0.7em 1em';
-          inputCargo.style.fontSize = '1em';
+          inputCargo.style.border = '1.5px solid #b0c4de';
+          inputCargo.style.borderRadius = '8px';
+          inputCargo.style.padding = '0.9em 1.2em';
+          inputCargo.style.fontSize = '1.1em';
           const inputFecha = document.createElement('input');
           inputFecha.type = 'date';
-          inputFecha.value = new Date().toISOString().slice(0,10);
-          inputFecha.style.marginBottom = '0.5em';
+          // Obtener fecha local en formato YYYY-MM-DD
+          const hoy = new Date();
+          const yyyy = hoy.getFullYear();
+          const mm = String(hoy.getMonth() + 1).padStart(2, '0');
+          const dd = String(hoy.getDate()).padStart(2, '0');
+          inputFecha.value = `${yyyy}-${mm}-${dd}`;
+          inputFecha.required = true;
+          inputFecha.style.flex = '1 1 40%';
           inputFecha.style.background = '#fff';
           inputFecha.style.color = '#182848';
-          inputFecha.style.border = 'none';
-          inputFecha.style.borderRadius = '6px';
-          inputFecha.style.padding = '0.7em 1em';
-          inputFecha.style.fontSize = '1em';
+          inputFecha.style.border = '1.5px solid #b0c4de';
+          inputFecha.style.borderRadius = '8px';
+          inputFecha.style.padding = '0.9em 1.2em';
+          inputFecha.style.fontSize = '1.1em';
+          fila2.appendChild(inputCargo);
+          fila2.appendChild(inputFecha);
+          // Fila 3: Sueldo
+          const fila3 = document.createElement('div');
+          fila3.style.display = 'flex';
+          fila3.style.gap = '1.2em';
+          fila3.style.width = '100%';
           const inputSueldo = document.createElement('input');
           inputSueldo.type = 'number';
           inputSueldo.placeholder = 'Sueldo';
-          inputSueldo.style.marginBottom = '0.5em';
+          inputSueldo.required = true;
+          inputSueldo.min = '0';
+          inputSueldo.style.flex = '1 1 100%';
           inputSueldo.style.background = '#fff';
           inputSueldo.style.color = '#182848';
-          inputSueldo.style.border = 'none';
-          inputSueldo.style.borderRadius = '6px';
-          inputSueldo.style.padding = '0.7em 1em';
-          inputSueldo.style.fontSize = '1em';
-          // Botón guardar
+          inputSueldo.style.border = '1.5px solid #b0c4de';
+          inputSueldo.style.borderRadius = '8px';
+          inputSueldo.style.padding = '0.9em 1.2em';
+          inputSueldo.style.fontSize = '1.1em';
+          fila3.appendChild(inputSueldo);
+          // Botones
+          const contBotones = document.createElement('div');
+          contBotones.style.display = 'flex';
+          contBotones.style.gap = '1em';
+          contBotones.style.marginTop = '1em';
+          contBotones.style.justifyContent = 'center';
           const btnGuardar = document.createElement('button');
+          btnGuardar.type = 'submit';
           btnGuardar.textContent = 'Agregar';
           btnGuardar.style.background = '#43aa8b';
-          btnGuardar.style.color = 'white';
+          btnGuardar.style.color = '#fff';
           btnGuardar.style.border = 'none';
-          btnGuardar.style.borderRadius = '6px';
-          btnGuardar.style.padding = '0.5em 1.3em';
-          btnGuardar.style.cursor = 'pointer';
+          btnGuardar.style.borderRadius = '8px';
+          btnGuardar.style.padding = '1em 2.5em';
           btnGuardar.style.fontWeight = 'bold';
-          btnGuardar.onclick = function() {
-            if (inputNombre.value && inputApellido.value && inputCargo.value && inputFecha.value && inputSueldo.value) {
-              btnGuardar.disabled = true;
-              btnGuardar.textContent = 'Agregando...';
-              fetch('/trabajadores', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                  nombre: inputNombre.value,
-                  apellido: inputApellido.value,
-                  cargo: inputCargo.value,
-                  fecha_contratacion: inputFecha.value,
-                  sueldo: parseFloat(inputSueldo.value),
-                  idSucursal: suc.idSucursal
-                })
-              })
-              .then(res => res.json())
-              .then(() => {
-                document.body.removeChild(modal);
-                cargarSucursalesYTrabajadores();
-              });
-            }
-          };
-          // Botón cancelar
+          btnGuardar.style.fontSize = '1.2em';
+          btnGuardar.style.cursor = 'pointer';
+          btnGuardar.style.transition = 'background 0.2s';
           const btnCancelar = document.createElement('button');
+          btnCancelar.type = 'button';
           btnCancelar.textContent = 'Cancelar';
           btnCancelar.style.background = '#e63946';
-          btnCancelar.style.color = 'white';
+          btnCancelar.style.color = '#fff';
           btnCancelar.style.border = 'none';
-          btnCancelar.style.borderRadius = '6px';
-          btnCancelar.style.padding = '0.5em 1.3em';
-          btnCancelar.style.cursor = 'pointer';
+          btnCancelar.style.borderRadius = '8px';
+          btnCancelar.style.padding = '1em 2.5em';
           btnCancelar.style.fontWeight = 'bold';
+          btnCancelar.style.fontSize = '1.2em';
+          btnCancelar.style.cursor = 'pointer';
+          btnCancelar.style.transition = 'background 0.2s';
+          contBotones.appendChild(btnGuardar);
+          contBotones.appendChild(btnCancelar);
+          // Mensaje de error
+          const mensaje = document.createElement('div');
+          mensaje.style.color = '#e63946';
+          mensaje.style.fontWeight = 'bold';
+          mensaje.style.display = 'none';
+          // Agregar filas y botones al formulario
+          form.appendChild(fila1);
+          form.appendChild(fila2);
+          form.appendChild(fila3);
+          form.appendChild(mensaje);
+          form.appendChild(contBotones);
+          inner.appendChild(form);
+          modal.appendChild(inner);
+          document.body.appendChild(modal);
+          // Cancelar
           btnCancelar.onclick = function() {
             document.body.removeChild(modal);
           };
-          inner.appendChild(inputNombre);
-          inner.appendChild(inputApellido);
-          inner.appendChild(inputCargo);
-          inner.appendChild(inputFecha);
-          inner.appendChild(inputSueldo);
-          inner.appendChild(btnGuardar);
-          inner.appendChild(btnCancelar);
-          modal.appendChild(inner);
-          document.body.appendChild(modal);
+          // Guardar
+          form.onsubmit = function(ev) {
+            ev.preventDefault();
+            mensaje.style.display = 'none';
+            if (!inputNombre.value.trim() || !inputApellido.value.trim() || !inputCargo.value.trim() || !inputFecha.value || !inputSueldo.value) {
+              mensaje.innerText = 'Completa todos los campos.';
+              mensaje.style.display = 'block';
+              return;
+            }
+            btnGuardar.disabled = true;
+            btnGuardar.textContent = 'Agregando...';
+            fetch('/trabajadores', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                nombre: inputNombre.value,
+                apellido: inputApellido.value,
+                cargo: inputCargo.value,
+                fecha_contratacion: inputFecha.value,
+                sueldo: parseFloat(inputSueldo.value),
+                idSucursal: suc.idSucursal
+              })
+            })
+            .then(res => res.json())
+            .then(data => {
+              if (data.mensaje) {
+                document.body.removeChild(modal);
+                cargarSucursalesYTrabajadores();
+              } else {
+                mensaje.innerText = data.error || 'Error al agregar el trabajador.';
+                mensaje.style.display = 'block';
+                btnGuardar.disabled = false;
+                btnGuardar.textContent = 'Agregar';
+              }
+            })
+            .catch(() => {
+              mensaje.innerText = 'Error al agregar el trabajador.';
+              mensaje.style.display = 'block';
+              btnGuardar.disabled = false;
+              btnGuardar.textContent = 'Agregar';
+            });
+          };
         };
         // Botón refrescar
         const btnRefrescar = document.createElement('button');
