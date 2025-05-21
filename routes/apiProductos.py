@@ -27,6 +27,8 @@ def get_categorias():
     finally:
         conexion.close()
 
+
+
 @productos_bp.route('/proveedores', methods=['GET'])
 def get_proveedores():
     """Devuelve todos los proveedores."""
